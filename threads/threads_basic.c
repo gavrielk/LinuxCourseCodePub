@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 	unsigned int num_of_threads = atoi(argv[1]);
 
 	//Allocate arrays whose size depends on user input
-	pthread_t* pthread_id_arr = (pthread_t*)malloc(num_of_threads);
-	unsigned int* input_args = (unsigned int*)malloc(num_of_threads);
+	pthread_t* pthread_id_arr = malloc(num_of_threads * sizeof(pthread_t));
+	unsigned int* input_args = malloc(num_of_threads * (sizeof(unsigned int)));
 
 	//Create threads
 	for(unsigned int i = 0; i < num_of_threads; i++)
