@@ -3,8 +3,6 @@
 #include <mqueue.h>
 #include "mq_ipc_vfork_include.h"
 
-#define MQ_MAX_SIZE         10
-#define MQ_MAX_MSG_SIZE     sizeof(MSG_DATA_S)
 #define NUM_OF_READERS    2
 
 int main()
@@ -20,7 +18,6 @@ int main()
     /* create the message queue and close(not delete) it immidiatly as it will be used only by children */
     mq_unlink(MQ_NAME); // delete first if already exists, this requires sudo privilege
     mq = mq_open(MQ_NAME, O_CREAT, S_IRWXU | S_IRWXG, &attr);
-	mq_close(mq);
 
 	/* create writer process */
 	wpid = vfork();

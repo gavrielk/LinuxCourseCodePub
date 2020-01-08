@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <mqueue.h>
@@ -5,7 +6,7 @@
 
 void main() //Writer
 {
-    MSG_DATA_S msg_data = {0};
+	float counter = 0;
     struct mq_attr mqAttr = {0};
 	
 	mqd_t mq = mq_open(MQ_NAME, O_WRONLY);
@@ -20,9 +21,28 @@ void main() //Writer
         }
         else
         {
-			msg_data.counter++;
-            mq_send(mq, (char*)&msg_data, MQ_MAX_MSG_SIZE, 0);
-            printf("Writer: %u\n",msg_data.counter);
+			counter += 0.5;
+			MSG_T* msg;
+
+			// Precise allocation should be done according to the type
+			// It is also possible to allocate a big buffer(see reader)
+			if (counter == (unsigned int)counter)	// if integer use UINT_MSG_DATA_T
+			{
+				msg = malloc(sizeof(MSG_T) + sizeof(UINT_MSG_DATA_T));
+				msg->type = UINT;
+				((UINT_MSG_DATA_T*)msg->data)->uvalue = (unsigned int)counter;
+			}
+			else 									// if float use FLOAT_MSG_DATA_T
+			{
+				msg = malloc(sizeof(MSG_T) + sizeof(FLOAT_MSG_DATA_T));
+				msg->type = FLOAT;
+				((FLOAT_MSG_DATA_T*)msg->data)->fvalue = counter;
+			}
+
+            mq_send(mq, (char*)msg, MQ_MAX_MSG_SIZE, 0);
+            printf("Writer: %.1f\n", counter);
+
+			free(msg);
         }
     }    
 }
