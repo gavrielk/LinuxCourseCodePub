@@ -8,7 +8,7 @@
 int main()
 {    
     mqd_t mq;
-    pthread_t wpid, rpid[NUM_OF_READERS];
+    pid_t wpid, rpid[NUM_OF_READERS];
     struct mq_attr attr = {0};
 
     /* initialize the queue attributes */
