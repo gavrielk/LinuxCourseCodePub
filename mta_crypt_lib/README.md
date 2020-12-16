@@ -1,0 +1,8 @@
+Encryption and randomization library for 2020 exercise #2
+
+To install the .deb package run:
+sudo dpkg --install mta-utils-dev.deb 
+
+Make sure to link your code with -lmta_rand & -lmta_crypt & -lcrypto(openssl) after installation
+
+** Tested on Ubuntu 20.04
