@@ -2,6 +2,7 @@
 # every variable can potentially also be an array of strings
 # by seperating the strings with space e.g. LIBS
 CC = gcc
+LIBS := 
 DEB_DIR = mta-utils-dev
 SOS_DIR = $(DEB_DIR)/usr/lib/x86_64-linux-gnu
 SOS = $(SOS_DIR)/libmta_rand.so $(SOS_DIR)/libmta_crypt.so
@@ -13,6 +14,7 @@ SOS_HEADERS_DIR = $(DEB_DIR)/usr/include/
 $(SOS_DIR)/lib%.so: %.c
 	mkdir -p $(SOS_DIR)
 	mkdir -p $(SOS_HEADERS_DIR)
+	$(if $(findstring crypt,$<), $(eval LIBS += -lcrypto),)
 	$(CC) -g -shared -fPIC $< -o $@ $(LIBS)
 	$(eval HEADER := $(patsubst %.c,%.h,$<))
 	cp $(HEADER) $(SOS_HEADERS_DIR)

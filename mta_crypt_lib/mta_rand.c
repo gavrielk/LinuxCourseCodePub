@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-void get_rand_data(char* data, unsigned int data_length)
+void MTA_get_rand_data(char* data, unsigned int data_length)
 {
     int seed = 0;
     struct timespec curr_time = {0};
@@ -16,7 +16,7 @@ void get_rand_data(char* data, unsigned int data_length)
     }
 }
 
-char get_rand_char()
+char MTA_get_rand_char()
 {
     int seed = 0;
     struct timespec curr_time = {0};
