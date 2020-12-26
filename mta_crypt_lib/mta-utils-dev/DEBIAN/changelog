@@ -1,0 +1,9 @@
+MTA utils (1.1-1)
+
+  * Fix MTA_decrypt constant error return even when data decrypted properly due to no disabling EVP padding
+  -- Gavriel Karasin <gavrielk@mta.ac.il>  Sat, 26 Dec 2020 17:42:00 +0300
+  
+MTA utils (1.0-1)
+
+  * Initial release.
+  -- Gavriel Karasin <gavrielk@mta.ac.il>  Sat, 12 Dec 2020 22:37:00 +0300

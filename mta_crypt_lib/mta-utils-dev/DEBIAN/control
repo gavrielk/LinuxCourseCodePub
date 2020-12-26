@@ -1,5 +1,6 @@
 Package: mta-utils-dev
-Version: 1.0
+Version: 1.1
+Release: 1
 Section: custom
 Priority: optional
 Architecture: amd64

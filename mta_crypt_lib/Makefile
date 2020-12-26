@@ -1,6 +1,3 @@
-# Variables declaration
-# every variable can potentially also be an array of strings
-# by seperating the strings with space e.g. LIBS
 CC = gcc
 LIBS := 
 DEB_DIR = mta-utils-dev

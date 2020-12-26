@@ -105,25 +105,18 @@ MTA_CRYPT_RET_STATUS MTA_decrypt(char* key, unsigned int key_length, char* encry
         goto fin;
     }
 
-    /* Initialise the decryption operation. IMPORTANT - ensure you use a key
-    * In this example we are using 256 bit AES (i.e. a 256 bit key). The
-    */
     MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, EVP_aes_256_ecb(), NULL, key, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
-    /* Provide the message to be decrypted, and obtain the plaintext output.
-    * EVP_DecryptUpdate can be called multiple times if necessary
-    */
+    MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_padding(ctx, 0), ret = MTA_CRYPT_RET_ERROR; goto fin);
+
     MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptUpdate(ctx, plain_data, &len, encrypted_data, encrypted_data_length), ret = MTA_CRYPT_RET_ERROR; goto fin);
     *plain_data_length = (unsigned int)len;
 
-    /* Finalise the decryption. Further plaintext bytes may be written at
-    * this stage.
-    */
+    // Finalize the encryption. Further ciphertext bytes may be written at this stage
     MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptFinal_ex(ctx, plain_data + len, &len), ret = MTA_CRYPT_RET_ERROR; goto fin);
     *plain_data_length += (unsigned int)len;
 
 fin:
-    /* Clean up */
     EVP_CIPHER_CTX_free(ctx);
     free(key_padded);
 
