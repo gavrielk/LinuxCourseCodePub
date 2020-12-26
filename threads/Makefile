@@ -1,6 +1,6 @@
 # Simple makefile create executable(.out) from every .c file
 CC = gcc
-LIBS = -lpthread
+LIBS = -lpthread -lrt
 
 # SRC will hold an array of all the .c files
 SRCS := $(subst ./,,$(shell find . -name "*.c"))

@@ -15,19 +15,21 @@ pthread_rwlock_t g_rwlock;
 
 int main()
 {    
-    pthread_t ptid,ctid;
+	pthread_t ptid,ctid;
 	pthread_rwlock_init(&g_rwlock, NULL);
+	int readers_thread_id[NUM_OF_READERS] = {0};
 
-    pthread_create(&ptid, NULL, Writer, NULL);
+	pthread_create(&ptid, NULL, Writer, NULL);
 	for(int i = 0; i < NUM_OF_READERS; i++)
 	{
-    	pthread_create(&ctid, NULL, Reader, (int)i);
-    }
+		readers_thread_id[i] = i;
+		pthread_create(&ctid, NULL, Reader, &readers_thread_id[i]);
+	}
 
-    pthread_join(ptid, NULL);
-    pthread_join(ctid, NULL);
+	pthread_join(ptid, NULL);
+	pthread_join(ctid, NULL);
     
-    return 0;
+	return 0;
 }
 
 void *Writer()
@@ -61,7 +63,7 @@ void *Reader(void* id)
 		while(i < g_counter)
 		{
 			i++;
-			printf("Reader #%d : %d\n", (int)id, i);
+			printf("Reader #%d : %d\n", *(int*)id, i);
 		}
 
 		// Release g_rwlock and repeat the loop
