@@ -1,5 +1,5 @@
 /*
- * MTA encryption utility library providing encryption and decryption over AES-256-ECB encryption algorithm
+ * MTA encryption utility library providing encryption and decryption over RC2-ECB encryption algorithm
  * The main motivation is to simplify the standard Openssl APIs 
  * Note 1: Caller should link with libcrypto(-lcrypto)
  * Note 2: Data length must be a multiplication of 8(MTA_CRYPT_RET_NOT_8_BYTE_MULTIPLICATION returned if not)
@@ -27,7 +27,7 @@ typedef enum {
  * [in]     plain_data_length       - length in bytes of the plain data buffer
  * [out]    encrypted_data          - pointer to the encrypted data buffer
  * [out]    encrypted_data_length   - length in bytes of the encrypted data buffer
- * encrypted_data_length might be bigger then plain_sata_length
+ * encrypted_data_length might be bigger then plain_data_length
  */
 MTA_CRYPT_RET_STATUS MTA_encrypt(char* key, unsigned int key_length, char* plain_data, unsigned int plain_data_length, char* encrypted_data, unsigned int* encrypted_data_length);
 

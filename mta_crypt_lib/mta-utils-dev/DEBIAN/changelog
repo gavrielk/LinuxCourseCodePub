@@ -1,3 +1,9 @@
+MTA utils (1.2-1)
+
+  * Replace AES-256-ECB with RC2-ECB encryption algorithm to avoid key and data padding 
+  * RC2-ECB supports any key size between 8-1024 as long as it is devidable by 8
+  -- Gavriel Karasin <gavrielk@mta.ac.il>  Fri, 1 Jan 2021 20:47:00 +0300
+  
 MTA utils (1.1-1)
 
   * Fix MTA_decrypt constant error return even when data decrypted properly due to no disabling EVP padding
