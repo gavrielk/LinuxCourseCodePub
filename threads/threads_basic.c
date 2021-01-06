@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	for(unsigned int i = 0; i < num_of_threads; i++)
 	{
 		input_args[i] = i;
-		res = pthread_create(&pthread_id_arr[i], NULL, thread, &input_args[i]);
+		res = pthread_create(&pthread_id_arr[i], NULL, thread, (void*)&input_args[i]);
 		assert(res == 0);
 	}
 
