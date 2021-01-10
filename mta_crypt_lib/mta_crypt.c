@@ -45,8 +45,8 @@
 MTA_CRYPT_RET_STATUS MTA_encrypt(char* key, unsigned int key_length, char* plain_data, unsigned int plain_data_length, char* encrypted_data, unsigned int* encrypted_data_length)
 {
     int ret = MTA_CRYPT_RET_OK;
-    EVP_CIPHER_CTX *ctx;
-    int len;
+    EVP_CIPHER_CTX *ctx = 0;
+    int len = 0;
     int evp_ret = 1;
 
     MTA_CRYPT_INPUT_KEY_VALIDATION(key, key_length);
@@ -61,9 +61,11 @@ MTA_CRYPT_RET_STATUS MTA_encrypt(char* key, unsigned int key_length, char* plain
         goto fin;
     }
 
-    MTA_CRYPT_CHECK_EVP_RET(EVP_EncryptInit_ex(ctx, EVP_rc2_ecb(), NULL, key, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
+    MTA_CRYPT_CHECK_EVP_RET(EVP_EncryptInit_ex(ctx, EVP_rc2_ecb(), NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_key_length(ctx, key_length), ret = MTA_CRYPT_RET_ERROR; goto fin);
+    
+	MTA_CRYPT_CHECK_EVP_RET(EVP_EncryptInit_ex(ctx, NULL, NULL, key, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_padding(ctx, 0), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
@@ -79,8 +81,8 @@ fin:
 MTA_CRYPT_RET_STATUS MTA_decrypt(char* key, unsigned int key_length, char* encrypted_data, unsigned int encrypted_data_length, char* plain_data, unsigned int* plain_data_length)
 {
     MTA_CRYPT_RET_STATUS ret = MTA_CRYPT_RET_OK;
-    EVP_CIPHER_CTX *ctx;
-    int len;
+    EVP_CIPHER_CTX *ctx = 0;
+    int len = 0;
     int evp_ret = 1;
 
     MTA_CRYPT_INPUT_KEY_VALIDATION(key, key_length);
@@ -92,10 +94,12 @@ MTA_CRYPT_RET_STATUS MTA_decrypt(char* key, unsigned int key_length, char* encry
         ret = MTA_CRYPT_RET_ERROR;
         goto fin;
     }
-
-    MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, EVP_rc2_ecb(), NULL, key, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
+	
+    MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, EVP_rc2_ecb(), NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_key_length(ctx, key_length), ret = MTA_CRYPT_RET_ERROR; goto fin);
+
+    MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, NULL, NULL, key, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_padding(ctx, 0), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
