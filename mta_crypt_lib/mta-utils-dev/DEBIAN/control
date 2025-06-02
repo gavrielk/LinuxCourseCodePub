@@ -6,4 +6,4 @@ Priority: optional
 Architecture: amd64
 Essential: no
 Maintainer: Gabi Karasin <gavrielk@mta.ac.il>
-Description: Provide encryption and randomization functionalities for MTA crypto exercise 2020(the year that will be remembered)
+Description: Provide encryption and randomization functionalities for MTA crypto exercise.
