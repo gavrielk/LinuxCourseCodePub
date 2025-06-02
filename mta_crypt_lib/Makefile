@@ -1,7 +1,8 @@
 CC = gcc
 LIBS := 
 DEB_DIR = mta-utils-dev
-SOS_DIR = $(DEB_DIR)/usr/lib/x86_64-linux-gnu
+ARCH ?= $(shell uname -p)
+SOS_DIR = $(DEB_DIR)/usr/lib/$(ARCH)-linux-gnu
 SOS = $(SOS_DIR)/libmta_rand.so $(SOS_DIR)/libmta_crypt.so
 SOS_LIBS = $(patsubst lib%.so,-l%, $(notdir $(SOS)))
 SOS_HEADERS_DIR = $(DEB_DIR)/usr/include/
@@ -19,9 +20,10 @@ $(SOS_DIR)/lib%.so: %.c
 .PHONY: all
 all:  $(SOS)
 	dpkg-deb --build $(DEB_DIR)
+	mv $(DEB_DIR).deb $(DEB_DIR)-$(ARCH).deb
 
 .PHONY: clean
 clean:
 	rm -rf ./*.o*
 	rm -rf $(DEB_DIR)/usr
-	rm -rf $(DEB_DIR).deb
+	rm -rf $(DEB_DIR)-$(ARCH).deb
