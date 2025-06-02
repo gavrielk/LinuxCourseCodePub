@@ -4,6 +4,7 @@ Release: 1
 Section: custom
 Priority: optional
 Architecture: amd64
+#Architecture: arm64
 Essential: no
 Maintainer: Gabi Karasin <gavrielk@mta.ac.il>
 Description: Provide encryption and randomization functionalities for MTA crypto exercise.
