@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <openssl/err.h>
+#include <openssl/provider.h>
 
 #define _GNU_SOURCE
 #include <openssl/evp.h>
@@ -37,22 +38,46 @@
         return MTA_CRYPT_RET_NULL_PTR_RECEIVED;             \
     }
 
+#define MTA_CRYPT_INIT_VALIDATION(provider)                 \
+    if (provider == NULL){                                  \
+        return MTA_CRYPT_RET_INIT_NOT_CALLED;               \
+    }
+
 #define MTA_CRYPT_CHECK_EVP_RET(ret, action)                \
     if (ret != 1){                                          \
+        fprintf(stderr, "%d: OpenSSL error: %s\n", __LINE__, ERR_reason_error_string(ERR_get_error())); \
         action;                                             \
     }
+
+const OSSL_PROVIDER *provider = NULL;
+const EVP_CIPHER *cipher = NULL;
+
+MTA_CRYPT_RET_STATUS MTA_crypt_init(){
+    provider = OSSL_PROVIDER_load(NULL, "legacy");
+    if (provider == NULL) {
+        return MTA_CRYPT_RET_ERROR;
+    }
+    
+    cipher = EVP_get_cipherbyname("RC2-ECB");
+    if (cipher == NULL) {
+        return MTA_CRYPT_RET_ERROR;
+    }
+
+    return MTA_CRYPT_RET_OK;
+}
 
 MTA_CRYPT_RET_STATUS MTA_encrypt(char* key, unsigned int key_length, char* plain_data, unsigned int plain_data_length, char* encrypted_data, unsigned int* encrypted_data_length)
 {
     int ret = MTA_CRYPT_RET_OK;
     EVP_CIPHER_CTX *ctx = 0;
     int len = 0;
-    int evp_ret = 1;
 
     MTA_CRYPT_INPUT_KEY_VALIDATION(key, key_length);
     MTA_CRYPT_NULL_VALIDATION(plain_data);
     MTA_CRYPT_NULL_VALIDATION(encrypted_data);
     MTA_CRYPT_NULL_VALIDATION(encrypted_data_length);
+    MTA_CRYPT_INIT_VALIDATION(provider);
+    MTA_CRYPT_INIT_VALIDATION(cipher);
 
     MTA_CRYPT_INPUT_DATA_VALIDATION(plain_data, plain_data_length);
 
@@ -61,7 +86,7 @@ MTA_CRYPT_RET_STATUS MTA_encrypt(char* key, unsigned int key_length, char* plain
         goto fin;
     }
 
-    MTA_CRYPT_CHECK_EVP_RET(EVP_EncryptInit_ex(ctx, EVP_rc2_ecb(), NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
+    MTA_CRYPT_CHECK_EVP_RET(EVP_EncryptInit_ex(ctx, cipher, NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_key_length(ctx, key_length), ret = MTA_CRYPT_RET_ERROR; goto fin);
     
@@ -83,19 +108,20 @@ MTA_CRYPT_RET_STATUS MTA_decrypt(char* key, unsigned int key_length, char* encry
     MTA_CRYPT_RET_STATUS ret = MTA_CRYPT_RET_OK;
     EVP_CIPHER_CTX *ctx = 0;
     int len = 0;
-    int evp_ret = 1;
 
     MTA_CRYPT_INPUT_KEY_VALIDATION(key, key_length);
     MTA_CRYPT_NULL_VALIDATION(encrypted_data);
     MTA_CRYPT_NULL_VALIDATION(plain_data);
     MTA_CRYPT_NULL_VALIDATION(plain_data_length);
+    MTA_CRYPT_INIT_VALIDATION(provider);
+    MTA_CRYPT_INIT_VALIDATION(cipher);
 
     if(!(ctx = EVP_CIPHER_CTX_new())){
         ret = MTA_CRYPT_RET_ERROR;
         goto fin;
     }
 	
-    MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, EVP_rc2_ecb(), NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
+    MTA_CRYPT_CHECK_EVP_RET(EVP_DecryptInit_ex(ctx, cipher, NULL, NULL, NULL), ret = MTA_CRYPT_RET_ERROR; goto fin);
 
     MTA_CRYPT_CHECK_EVP_RET(EVP_CIPHER_CTX_set_key_length(ctx, key_length), ret = MTA_CRYPT_RET_ERROR; goto fin);
 

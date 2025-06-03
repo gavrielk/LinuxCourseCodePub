@@ -1,3 +1,7 @@
+MTA utils (1.5-1)
+  * Fix compatibility of RC2 to OpenSSL-3 with legacy provider
+  -- Gavriel Karasin <gavrielk@mta.ac.il>  Tue, 3 Jun 2025 22:46:00 +0300
+
 MTA utils (1.4-1)
   * Make build create architecture dependent package
   * Remove false dependency to libssl1.1, only libssl3 should be used

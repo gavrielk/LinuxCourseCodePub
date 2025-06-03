@@ -9,6 +9,7 @@
 typedef enum {
     MTA_CRYPT_RET_OK,
     MTA_CRYPT_RET_ERROR,
+    MTA_CRYPT_RET_INIT_NOT_CALLED,
     MTA_CRYPT_RET_NULL_PTR_RECEIVED,
     MTA_CRYPT_RET_DATA_ZERO_LENGTH,
     MTA_CRYPT_RET_DATA_MAX_LENGTH_EXCEEDED,
@@ -16,6 +17,15 @@ typedef enum {
     MTA_CRYPT_RET_KEY_MAX_LENGTH_EXCEEDED,
     MTA_CRYPT_RET_NOT_8_BYTE_MULTIPLICATION,
 } MTA_CRYPT_RET_STATUS;
+
+/*
+    * Function:    MTA_crypt_init
+    * Description: Initialize the MTA crypt library, load the legacy provider and set the cipher to RC2-ECB
+    * --------------------------------------------------------------------------------------------
+    * Returns:    MTA_CRYPT_RET_OK on success, or an error code on failure
+    * Note:       This function *MUST* be called before any encryption or decryption operations
+*/
+MTA_CRYPT_RET_STATUS MTA_crypt_init();
 
 /*
  * Function:    MTA_encrypt

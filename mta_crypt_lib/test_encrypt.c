@@ -10,6 +10,7 @@
 #include <mta_rand.h>
 #include "errno.h"
 #include <sys/time.h>
+#include <assert.h>
 
 #define NUM_OF_ROUNDS       10
 #define NUM_OF_ITERATIONS   10000000
@@ -26,18 +27,24 @@ int main(int argc, char **argv)
     printf ("***** Start benchmark test *****\n");
     printf ("Running %d iterations in %d rounds\n", NUM_OF_ITERATIONS, NUM_OF_ROUNDS);
 
+    MTA_CRYPT_RET_STATUS res = MTA_crypt_init();
+    assert(res == MTA_CRYPT_RET_OK);
+
     gettimeofday(&total_start_time, 0);
     for (int j = 0; j < NUM_OF_ROUNDS; j++)
     {
         MTA_get_rand_data(pass, pass_len);
         MTA_get_rand_data(key, key_len);
-        MTA_encrypt(key, key_len, pass, pass_len, enc_pass, &enc_pass_len);
+        MTA_CRYPT_RET_STATUS res = MTA_encrypt(key, key_len, pass, pass_len, enc_pass, &enc_pass_len);
+        assert(res == MTA_CRYPT_RET_OK);
 
         gettimeofday(&iter_start_time, 0);
         for (int i = 0; i < NUM_OF_ITERATIONS; i++)
         {
             MTA_get_rand_data(guessed_key, key_len);
-            MTA_decrypt(guessed_key, key_len, enc_pass, enc_pass_len, dec_pass, &dec_pass_len);
+            res = MTA_decrypt(guessed_key, key_len, enc_pass, enc_pass_len, dec_pass, &dec_pass_len);
+            assert(res == MTA_CRYPT_RET_OK);
+            
             if(memcmp(dec_pass, pass, pass_len) == 0){
                 iter_dec_counter++;
                 // printf("Password %s decrypted successfully\n", dec_pass);
