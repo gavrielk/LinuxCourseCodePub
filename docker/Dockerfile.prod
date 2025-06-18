@@ -6,3 +6,5 @@ RUN mkdir /root/bin/
 RUN mkdir /root/zip_in/
 RUN mkdir /root/zip_out/
 COPY app/bin/zipper.out /root/bin/
+
+CMD /root/bin/zipper.out
